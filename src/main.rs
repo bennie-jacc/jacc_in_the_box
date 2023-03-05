@@ -3,6 +3,7 @@ pub mod main_menu;
 pub mod in_game;
 pub mod record_view;
 pub mod how_to_play;
+pub mod draw_util;
 
 use ggez::{
     ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{self, Color, Canvas}, input::keyboard::{KeyInput}, GameError
@@ -52,7 +53,7 @@ impl EventHandler for Game {
 
         match self.game_state {
             game_state::GameState::MainMenu      => draw_main_menu(self, &mut canvas, ctx),
-            game_state::GameState::HowToPlay     => draw_how_to_play(),
+            game_state::GameState::HowToPlay     => draw_how_to_play(self, &mut canvas),
             game_state::GameState::InGame        => draw_in_game(),
             game_state::GameState::Leaderboard   => draw_record_view()
         };
