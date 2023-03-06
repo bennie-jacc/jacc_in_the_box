@@ -47,7 +47,7 @@ impl Jacc {
 }
 
 fn get_rand_value() -> u32 {
-    rand::thread_rng().gen_range(1..15)
+    rand::thread_rng().gen_range(1..15) * 60
 }
 
 pub enum JaccState {

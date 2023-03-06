@@ -2,6 +2,6 @@ pub enum GameState {
     MainMenu,
     InGame,
     HowToPlay,
-    AfterGame,
+    AfterGame(bool),
     Leaderboard
 }

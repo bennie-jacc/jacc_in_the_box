@@ -54,9 +54,10 @@ impl EventHandler for Game {
         let mut canvas: Canvas = graphics::Canvas::from_frame(ctx, Color::WHITE);
 
         match self.game_state {
-            game_state::GameState::MainMenu      => draw_main_menu(self, &mut canvas, ctx),
-            game_state::GameState::HowToPlay     => draw_how_to_play(self, &mut canvas),
-            game_state::GameState::InGame        => draw_in_game(self, &mut canvas),
+            GameState::MainMenu                 => draw_main_menu(self, &mut canvas, ctx),
+            GameState::HowToPlay                => draw_how_to_play(self, &mut canvas),
+            GameState::InGame                   => draw_in_game(self, &mut canvas, ctx),
+            GameState::AfterGame(val)     => todo!("Please implement this later!"),
             _ => todo!()
         };
         

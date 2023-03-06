@@ -42,6 +42,7 @@ pub fn draw_main_menu(game: &mut Game, canvas: &mut Canvas, ctx: &mut Context) {
 pub fn kde_main_menu(game: &mut Game, input: &KeyInput) {
     if input.keycode == Some(KeyCode::Key1) {
         game.game_state = GameState::InGame;
+        game.jacc.set_jacc_state_in_box();
     }
     else if input.keycode == Some(KeyCode::Key2) {
         game.game_state = GameState::HowToPlay;
