@@ -17,6 +17,13 @@ impl Jacc {
         }
     }
 
+    pub fn reset_game(&mut self) {
+        self.jacc_state     = JaccState::InTheBox;
+        self.clown_rng      = get_rand_value();
+        self.timer          = 0;
+        self.time_since_pop = 0;
+    }
+
     pub fn increment_timer(&mut self) {
         self.timer += 1;
     }
@@ -37,12 +44,20 @@ impl Jacc {
         self.timer
     }
 
+    pub fn get_time_since_pop(&self) -> u32 {
+        self.time_since_pop
+    }
+
     pub fn set_jacc_state_in_box(&mut self) {
         self.jacc_state = JaccState::InTheBox;
     }
 
     pub fn set_jacc_state_out_of_box(&mut self) {
         self.jacc_state = JaccState::OutOfBox;
+    }
+
+    pub fn set_jacc_state_not_applicable(&mut self) {
+        self.jacc_state = JaccState::NotApplicable;
     }
 }
 

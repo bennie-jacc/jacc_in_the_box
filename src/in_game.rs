@@ -1,4 +1,4 @@
-use ggez::{input::keyboard::{KeyInput, KeyCode}, graphics::{Canvas, DrawParam, Color, Text}, glam::vec2, timer, Context};
+use ggez::{input::keyboard::{KeyInput, KeyCode}, graphics::{Canvas, DrawParam, Color, Text}, glam::vec2, Context};
 use crate::{Game, draw_util::draw_game_title, jacc::JaccState, game_state::GameState};
 
 const DESIRED_FPS: u32 = 60;

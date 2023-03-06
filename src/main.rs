@@ -4,9 +4,10 @@ pub mod in_game;
 pub mod how_to_play;
 pub mod draw_util;
 pub mod jacc;
+pub mod after_game;
 
 use ggez::{
-    ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{self, Color, Canvas}, input::keyboard::{KeyInput}, GameError
+    ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{Color, Canvas}, input::keyboard::{KeyInput}, GameError
 };
 
 use jacc::Jacc;
@@ -14,6 +15,7 @@ use game_state::GameState;
 use main_menu::{draw_main_menu, kde_main_menu};
 use in_game::{draw_in_game, kde_in_game};
 use how_to_play::{draw_how_to_play, kde_how_to_play};
+use after_game::{draw_after_game, kde_after_game};
 
 pub fn main() {
     let (mut ctx, event_loop) = ContextBuilder::new("jacc_in_the_box", "Bernardo")
@@ -42,6 +44,11 @@ impl Game {
             jacc: Jacc::new()
         }
     }
+
+    pub fn reset_game(&mut self) {
+        self.game_state = GameState::InGame;
+        self.jacc.reset_game();
+    }
 }
 
 impl EventHandler for Game {
@@ -51,13 +58,13 @@ impl EventHandler for Game {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        let mut canvas: Canvas = graphics::Canvas::from_frame(ctx, Color::WHITE);
+        let mut canvas: Canvas = Canvas::from_frame(ctx, Color::WHITE);
 
         match self.game_state {
-            GameState::MainMenu                 => draw_main_menu(self, &mut canvas, ctx),
+            GameState::MainMenu                 => draw_main_menu(self, &mut canvas),
             GameState::HowToPlay                => draw_how_to_play(self, &mut canvas),
             GameState::InGame                   => draw_in_game(self, &mut canvas, ctx),
-            GameState::AfterGame(val)     => todo!("Please implement this later!"),
+            GameState::AfterGame(success) => draw_after_game(success, self, &mut canvas),
             _ => todo!()
         };
         
@@ -66,9 +73,10 @@ impl EventHandler for Game {
 
     fn key_down_event(&mut self, _ctx: &mut Context, input: KeyInput, _repeated: bool) -> Result<(), GameError> {
         match self.game_state {
-            GameState::MainMenu  => kde_main_menu(self, &input),
-            GameState::InGame    => kde_in_game(self, &input),
-            GameState::HowToPlay => kde_how_to_play(self, &input),
+            GameState::MainMenu                 => kde_main_menu(self, &input),
+            GameState::InGame                   => kde_in_game(self, &input),
+            GameState::HowToPlay                => kde_how_to_play(self, &input),
+            GameState::AfterGame(_success) => kde_after_game(self, &input),
             _ => todo!()
         }
 

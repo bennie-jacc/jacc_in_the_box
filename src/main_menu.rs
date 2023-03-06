@@ -2,7 +2,7 @@ use crate::{Game, game_state::GameState, draw_util::draw_game_title};
 
 use ggez::{*, graphics::{Canvas, Text, Color}, input::keyboard::{KeyInput, KeyCode}};
 
-pub fn draw_main_menu(game: &mut Game, canvas: &mut Canvas, ctx: &mut Context) {
+pub fn draw_main_menu(game: &mut Game, canvas: &mut Canvas) {
     draw_game_title(&game.name, canvas);
     
     canvas.draw(
