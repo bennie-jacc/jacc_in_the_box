@@ -22,11 +22,11 @@ use after_game::{draw_after_game, kde_after_game};
 pub fn main() {
     generate_toml_file().expect("Failed to generate conf.toml file!");
 
-    let (mut ctx, event_loop) = ContextBuilder::new("jacc_in_the_box", "Bernardo")
+    let (ctx, event_loop) = ContextBuilder::new("jacc_in_the_box", "Bernardo")
         .build()
         .expect("Something went wrong creating the game context!");
 
-    let game: Game = Game::new(&mut ctx);
+    let game: Game = Game::new();
     
     ctx.gfx.set_window_title(&game.name);
 
@@ -42,23 +42,33 @@ pub fn generate_toml_file() -> GameResult {
 pub struct Game {
     name: String,
     game_state: GameState,
-    jacc: Jacc
+    jacc: Option<Jacc>
 }
 
 impl Game {
-    pub fn new(_ctx: &mut Context) -> Game {
-        // Load and or create resources here..
+
+    // Load and or create resources here..
+    pub fn new() -> Game {
         Game { 
             name: String::from("Jacc in the Box"),
             game_state: game_state::GameState::MainMenu,
-            jacc: Jacc::new()
+            jacc: None
         }
     }
 
-    pub fn reset_game(&mut self) {
+    pub fn start_game(&mut self, ctx: &Context) {
         self.game_state = GameState::InGame;
-        self.jacc.reset_game();
+        self.set_jacc(Jacc::new(ctx));
     }
+
+    pub fn get_jacc(&mut self) -> &mut Jacc {
+        match &mut self.jacc {
+            Some(jacc) => jacc,
+            None => panic!("Jacc wasn't ready at main::get_jacc()")
+        }
+    }
+
+    pub fn set_jacc(&mut self, jacc: Jacc) { self.jacc = Some(jacc); }
 }
 
 impl EventHandler for Game {
@@ -73,7 +83,7 @@ impl EventHandler for Game {
         match self.game_state {
             GameState::MainMenu                 => draw_main_menu(self, &mut canvas),
             GameState::HowToPlay                => draw_how_to_play(self, &mut canvas),
-            GameState::InGame                   => draw_in_game(self, &mut canvas, ctx),
+            GameState::InGame                   => draw_in_game(self, &mut canvas),
             GameState::AfterGame(success) => draw_after_game(success, self, &mut canvas),
             _ => todo!()
         };
@@ -81,12 +91,12 @@ impl EventHandler for Game {
         canvas.finish(ctx)
     }
 
-    fn key_down_event(&mut self, _ctx: &mut Context, input: KeyInput, _repeated: bool) -> Result<(), GameError> {
+    fn key_down_event(&mut self, ctx: &mut Context, input: KeyInput, _repeated: bool) -> Result<(), GameError> {
         match self.game_state {
-            GameState::MainMenu                 => kde_main_menu(self, &input),
-            GameState::InGame                   => kde_in_game(self, &input),
-            GameState::HowToPlay                => kde_how_to_play(self, &input),
-            GameState::AfterGame(_success) => kde_after_game(self, &input),
+            GameState::MainMenu                  => kde_main_menu(ctx, self, &input),
+            GameState::InGame                    => kde_in_game(ctx, self, &input),
+            GameState::HowToPlay                 => kde_how_to_play(self, &input),
+            GameState::AfterGame(_success) => kde_after_game(ctx, self, &input),
             _ => todo!()
         }
 

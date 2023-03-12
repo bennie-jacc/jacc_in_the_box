@@ -1,9 +1,11 @@
-use ggez::{graphics::{Canvas, Text, DrawParam, Color}, glam::vec2, input::keyboard::{KeyInput, KeyCode}};
+use ggez::{graphics::{Canvas, Text, DrawParam, Color}, glam::vec2, input::keyboard::{KeyInput, KeyCode}, Context};
 
 use crate::{Game, game_state::GameState};
 
 pub fn draw_after_game(success: bool, game: &mut Game, canvas: &mut Canvas) {
-    let text: String = if success { format!("Congratulations! You took {} seconds!", game.jacc.get_time_since_pop()) } else { "You lost! Next time be more patient!".to_string() };
+    let text: String = 
+        if success { format!("Congratulations! You took {} seconds!", game.get_jacc().get_winner_time()) }
+        else { "You lost! Next time be more patient!".to_string() };
     
     canvas.draw(
         &Text::new(text),
@@ -22,7 +24,7 @@ pub fn draw_after_game(success: bool, game: &mut Game, canvas: &mut Canvas) {
     );
 }
 
-pub fn kde_after_game(game: &mut Game, input: &KeyInput) {
+pub fn kde_after_game(ctx: &Context, game: &mut Game, input: &KeyInput) {
     if input.keycode == Some(KeyCode::Escape) { game.game_state = GameState::MainMenu; } 
-    else if input.keycode == Some(KeyCode::Space) { game.reset_game(); }
+    else if input.keycode == Some(KeyCode::Space) { game.start_game(ctx); }
 }

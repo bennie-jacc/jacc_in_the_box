@@ -39,10 +39,9 @@ pub fn draw_main_menu(game: &mut Game, canvas: &mut Canvas) {
 }
 
 // Key down event, when called from main_menu.
-pub fn kde_main_menu(game: &mut Game, input: &KeyInput) {
+pub fn kde_main_menu(ctx: &mut Context, game: &mut Game, input: &KeyInput) {
     if input.keycode == Some(KeyCode::Key1) {
-        game.game_state = GameState::InGame;
-        game.jacc.set_jacc_state_in_box();
+        game.start_game(ctx);
     }
     else if input.keycode == Some(KeyCode::Key2) {
         game.game_state = GameState::HowToPlay;
