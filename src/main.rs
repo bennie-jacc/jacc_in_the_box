@@ -5,6 +5,8 @@ pub mod how_to_play;
 pub mod draw_util;
 pub mod jacc;
 pub mod after_game;
+pub mod leaderboard;
+pub mod leaderboard_entry;
 
 use std::fs::File;
 
@@ -14,6 +16,7 @@ use ggez::{
 
 use jacc::Jacc;
 use game_state::GameState;
+use leaderboard::Leaderboard;
 use main_menu::{draw_main_menu, kde_main_menu};
 use in_game::{draw_in_game, kde_in_game};
 use how_to_play::{draw_how_to_play, kde_how_to_play};
@@ -42,7 +45,8 @@ pub fn generate_toml_file() -> GameResult {
 pub struct Game {
     name: String,
     game_state: GameState,
-    jacc: Option<Jacc>
+    jacc: Option<Jacc>,
+    leaderboard: Leaderboard
 }
 
 impl Game {
@@ -52,7 +56,8 @@ impl Game {
         Game { 
             name: String::from("Jacc in the Box"),
             game_state: game_state::GameState::MainMenu,
-            jacc: None
+            jacc: None,
+            leaderboard: Leaderboard::new()
         }
     }
 
@@ -69,6 +74,8 @@ impl Game {
     }
 
     pub fn set_jacc(&mut self, jacc: Jacc) { self.jacc = Some(jacc); }
+
+    pub fn get_leaderboard(&mut self) -> &mut Leaderboard { &mut self.leaderboard }
 }
 
 impl EventHandler for Game {
