@@ -6,8 +6,10 @@ pub mod draw_util;
 pub mod jacc;
 pub mod after_game;
 
+use std::fs::File;
+
 use ggez::{
-    ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{Color, Canvas}, input::keyboard::{KeyInput}, GameError
+    ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{Color, Canvas}, input::keyboard::KeyInput, GameError, conf::Conf
 };
 
 use jacc::Jacc;
@@ -18,6 +20,8 @@ use how_to_play::{draw_how_to_play, kde_how_to_play};
 use after_game::{draw_after_game, kde_after_game};
 
 pub fn main() {
+    generate_toml_file().expect("Failed to generate conf.toml file!");
+
     let (mut ctx, event_loop) = ContextBuilder::new("jacc_in_the_box", "Bernardo")
         .build()
         .expect("Something went wrong creating the game context!");
@@ -27,6 +31,12 @@ pub fn main() {
     ctx.gfx.set_window_title(&game.name);
 
     event::run(ctx, event_loop, game);
+}
+
+pub fn generate_toml_file() -> GameResult {
+    let conf: Conf = Conf::new();
+    let mut config_file = File::create("conf.toml")?;
+    conf.to_toml_file(&mut config_file)
 }
 
 pub struct Game {
