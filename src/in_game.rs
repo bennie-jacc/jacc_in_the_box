@@ -1,5 +1,5 @@
 use ggez::{input::keyboard::{KeyInput, KeyCode}, graphics::{Canvas, DrawParam, Color, Text}, glam::vec2, Context};
-use crate::{Game, draw_util::draw_game_title, jacc::{JaccState, Jacc}, game_state::GameState};
+use crate::{Game, draw_util::draw_game_title, jacc::{JaccState, Jacc}, game_state::GameState, leaderboard_entry::LeaderboardEntry};
 
 pub fn draw_in_game(game: &mut Game, canvas: &mut Canvas) {
     draw_game_title(&game.name, canvas);
@@ -15,7 +15,10 @@ pub fn kde_in_game(ctx: &Context, game: &mut Game, input: &KeyInput) {
         game.game_state = match game.get_jacc().get_jacc_state() {
             JaccState::OutOfBox => {
                 let jacc: &mut Jacc = game.get_jacc();
-                jacc.set_winner_time(jacc.get_time_since_pop() as f32 / ctx.time.fps() as f32);
+                let score: f32 = jacc.get_time_since_pop() as f32 / ctx.time.fps() as f32;
+            
+                jacc.set_winner_time(score);
+                game.leaderboard.update_highscores(LeaderboardEntry::new(String::from(&game.username), score));
                 
                 GameState::AfterGame(true)
             },

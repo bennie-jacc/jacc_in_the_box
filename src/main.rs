@@ -46,6 +46,7 @@ pub struct Game {
     name: String,
     game_state: GameState,
     jacc: Option<Jacc>,
+    username: String,
     leaderboard: Leaderboard
 }
 
@@ -57,6 +58,7 @@ impl Game {
             name: String::from("Jacc in the Box"),
             game_state: game_state::GameState::MainMenu,
             jacc: None,
+            username: String::from("Hardcoded value for now"),
             leaderboard: Leaderboard::new()
         }
     }
