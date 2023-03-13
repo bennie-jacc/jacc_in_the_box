@@ -8,7 +8,7 @@ pub mod after_game;
 pub mod leaderboard;
 pub mod leaderboard_entry;
 
-use std::fs::File;
+use std::{fs::File, env};
 
 use ggez::{
     ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{Color, Canvas}, input::keyboard::KeyInput, GameError, conf::Conf
@@ -23,13 +23,17 @@ use how_to_play::{draw_how_to_play, kde_how_to_play};
 use after_game::{draw_after_game, kde_after_game};
 
 pub fn main() {
+    let args: Vec<String> = env::args().collect();
+
     generate_toml_file().expect("Failed to generate conf.toml file!");
 
     let (ctx, event_loop) = ContextBuilder::new("jacc_in_the_box", "Bernardo")
         .build()
         .expect("Something went wrong creating the game context!");
 
-    let game: Game = Game::new();
+    let username = if let Some(val) = args.get(1) { String::from(val) } else { String::from("Player") };
+
+    let game: Game = Game::new(username);
     
     ctx.gfx.set_window_title(&game.name);
 
@@ -44,21 +48,21 @@ pub fn generate_toml_file() -> GameResult {
 
 pub struct Game {
     name: String,
+    username: String,
     game_state: GameState,
     jacc: Option<Jacc>,
-    username: String,
     leaderboard: Leaderboard
 }
 
 impl Game {
 
     // Load and or create resources here..
-    pub fn new() -> Game {
+    pub fn new(username: String) -> Game {
         Game { 
             name: String::from("Jacc in the Box"),
             game_state: game_state::GameState::MainMenu,
             jacc: None,
-            username: String::from("Hardcoded value for now"),
+            username,
             leaderboard: Leaderboard::new()
         }
     }
