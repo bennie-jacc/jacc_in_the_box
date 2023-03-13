@@ -4,7 +4,7 @@ use crate::leaderboard_entry::LeaderboardEntry;
 
 pub struct Leaderboard {
     file_path: String,
-    leaderboard: Vec<LeaderboardEntry>
+    pub leaderboard: Vec<LeaderboardEntry>
 }
 
 impl Leaderboard {

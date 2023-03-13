@@ -7,6 +7,7 @@ pub mod jacc;
 pub mod after_game;
 pub mod leaderboard;
 pub mod leaderboard_entry;
+pub mod leaderboard_menu;
 
 use std::{fs::File, env};
 
@@ -17,6 +18,7 @@ use ggez::{
 use jacc::Jacc;
 use game_state::GameState;
 use leaderboard::Leaderboard;
+use leaderboard_menu::{draw_leaderboard, kde_leaderboard};
 use main_menu::{draw_main_menu, kde_main_menu};
 use in_game::{draw_in_game, kde_in_game};
 use how_to_play::{draw_how_to_play, kde_how_to_play};
@@ -60,11 +62,15 @@ impl Game {
     pub fn new(username: String) -> Game {
         Game { 
             name: String::from("Jacc in the Box"),
-            game_state: game_state::GameState::MainMenu,
+            game_state: GameState::MainMenu,
             jacc: None,
             username,
             leaderboard: Leaderboard::new()
         }
+    }
+
+    pub fn go_to_main_menu(&mut self) {
+        self.game_state = GameState::MainMenu;
     }
 
     pub fn start_game(&mut self, ctx: &Context) {
@@ -98,7 +104,7 @@ impl EventHandler for Game {
             GameState::HowToPlay                => draw_how_to_play(self, &mut canvas),
             GameState::InGame                   => draw_in_game(self, &mut canvas),
             GameState::AfterGame(success) => draw_after_game(success, self, &mut canvas),
-            _ => todo!()
+            GameState::Leaderboard              => draw_leaderboard(self, &mut canvas)
         };
         
         canvas.finish(ctx)
@@ -110,7 +116,7 @@ impl EventHandler for Game {
             GameState::InGame                    => kde_in_game(ctx, self, &input),
             GameState::HowToPlay                 => kde_how_to_play(self, &input),
             GameState::AfterGame(_success) => kde_after_game(ctx, self, &input),
-            _ => todo!()
+            GameState::Leaderboard               => kde_leaderboard(self, &input)
         }
 
         Ok(())

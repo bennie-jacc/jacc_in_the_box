@@ -1,6 +1,6 @@
 use ggez::{graphics::{Canvas, Text, DrawParam, Color}, glam::vec2, input::keyboard::{KeyInput, KeyCode}, Context};
 
-use crate::{Game, game_state::GameState};
+use crate::Game;
 
 pub fn draw_after_game(success: bool, game: &mut Game, canvas: &mut Canvas) {
     let text: String = 
@@ -25,6 +25,6 @@ pub fn draw_after_game(success: bool, game: &mut Game, canvas: &mut Canvas) {
 }
 
 pub fn kde_after_game(ctx: &Context, game: &mut Game, input: &KeyInput) {
-    if input.keycode == Some(KeyCode::Escape) { game.game_state = GameState::MainMenu; } 
+    if input.keycode == Some(KeyCode::Escape) { game.go_to_main_menu() } 
     else if input.keycode == Some(KeyCode::Space) { game.start_game(ctx); }
 }
