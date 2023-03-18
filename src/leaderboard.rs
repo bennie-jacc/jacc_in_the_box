@@ -9,7 +9,7 @@ pub struct Leaderboard {
 
 impl Leaderboard {
     pub fn new() -> Leaderboard {
-        let path: String = String::from("target/leaderboard.txt");
+        let path: String = String::from("./resources/leaderboard.txt");
         let leaderboard_file: File = gen_leaderboard(&path);
 
         Leaderboard {
@@ -60,7 +60,7 @@ fn gen_leaderboard(path_str: &String) -> File {
     let file: File = match File::open(&path) {
         Ok(file) => file,
         Err(..) => {
-            File::create("target/leaderboard.txt")
+            File::create(path_str)
                 .expect("Unable to create file, probably due to lack of permissions in your Operative System")
         }
     };

@@ -8,14 +8,16 @@ pub mod after_game;
 pub mod leaderboard;
 pub mod leaderboard_entry;
 pub mod leaderboard_menu;
+pub mod assets;
 
-use std::{fs::File, env};
+use std::{fs::File, env, path};
 
 use ggez::{
-    ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{Color, Canvas}, input::keyboard::KeyInput, GameError, conf::Conf
+    ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{Color, Canvas}, input::keyboard::KeyInput, GameError, conf::{Conf, self}, mint::Point2
 };
 
 use jacc::Jacc;
+use assets::Assets;
 use game_state::GameState;
 use leaderboard::Leaderboard;
 use leaderboard_menu::{draw_leaderboard, kde_leaderboard};
@@ -29,13 +31,25 @@ pub fn main() {
 
     generate_toml_file().expect("Failed to generate conf.toml file!");
 
-    let (ctx, event_loop) = ContextBuilder::new("jacc_in_the_box", "Bernardo")
-        .build()
+    // Add a directory for files!
+    let resource_dir = if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
+        let mut path = path::PathBuf::from(manifest_dir);
+        path.push("resources");
+        path
+    }
+    else { path::PathBuf::from("./resources") };
+
+    let context_builder = ContextBuilder::new("JaccInTheBox", "Benny")
+        .window_setup(conf::WindowSetup::default().title("Jacc In The Box!"))
+        .window_mode(conf::WindowMode::default().dimensions(640.0, 640.0))
+        .add_resource_path(resource_dir);
+
+    let (ctx, event_loop) = context_builder.build()
         .expect("Something went wrong creating the game context!");
 
     let username = if let Some(val) = args.get(1) { String::from(val) } else { String::from("Player") };
 
-    let game: Game = Game::new(username);
+    let game: Game = Game::new(&ctx, username);
     
     ctx.gfx.set_window_title(&game.name);
 
@@ -50,6 +64,9 @@ pub fn generate_toml_file() -> GameResult {
 
 pub struct Game {
     name: String,
+    screen_width: f32,
+    screen_height: f32,
+    assets: Assets,
     username: String,
     game_state: GameState,
     jacc: Option<Jacc>,
@@ -59,9 +76,15 @@ pub struct Game {
 impl Game {
 
     // Load and or create resources here..
-    pub fn new(username: String) -> Game {
+    pub fn new(ctx: &Context, username: String) -> Game {
+
+        let assets: Assets = Assets::new(ctx).expect("Unable to parse Assets. Please validate if they exist at the pre-defined paths");
+
         Game { 
             name: String::from("Jacc in the Box"),
+            screen_width: 600.0,
+            screen_height: 800.0,
+            assets,
             game_state: GameState::MainMenu,
             jacc: None,
             username,
@@ -88,6 +111,14 @@ impl Game {
     pub fn set_jacc(&mut self, jacc: Jacc) { self.jacc = Some(jacc); }
 
     pub fn get_leaderboard(&mut self) -> &mut Leaderboard { &mut self.leaderboard }
+
+    pub fn get_screen_size(&self) -> Point2<f32> { Point2 { x: self.screen_width, y: self.screen_height } }
+    
+    pub fn get_screen_width(&self) -> f32 { self.screen_width }
+
+    pub fn get_screen_height(&self) -> f32 { self.screen_height }
+
+    pub fn get_assets(&mut self) -> &mut Assets { &mut self.assets }
 }
 
 impl EventHandler for Game {
