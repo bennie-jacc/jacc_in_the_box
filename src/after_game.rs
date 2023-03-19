@@ -16,7 +16,7 @@ pub fn draw_after_game(success: bool, game: &mut Game, canvas: &mut Canvas) {
     );
 
     canvas.draw(
-        &Text::new(format!("Please press ESC key to go back to main menu or SPACE to play again!")),
+        &Text::new(format!("Press ESC key to go to main menu or SPACE to play again!")),
         DrawParam::default()
             .dest(vec2(50.0, 400.0))
             .color(Color::BLACK)

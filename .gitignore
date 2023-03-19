@@ -1,3 +1,4 @@
 # Ignore generated files. Libraries are fetched from cargo.toml
 /target/
 conf.toml
+resources/leaderboard.txt

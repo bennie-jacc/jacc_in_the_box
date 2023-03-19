@@ -1,4 +1,4 @@
-use ggez::{GameResult, Context, graphics::Image, audio::Source};
+use ggez::{Context, graphics::Image, audio::Source};
 
 pub struct Assets {
     jacc_in_the_box: Image,
@@ -7,15 +7,13 @@ pub struct Assets {
 }
 
 impl Assets {
-    pub fn new(ctx: &Context) -> GameResult<Assets> {
+    pub fn new(ctx: &Context) -> Assets {
         // Initialize all assets ...
-        Ok(
-            Assets { 
-                jacc_in_the_box: Image::from_path(ctx, "/JaccInTheBox.png").unwrap(), 
-                jacc_out_of_box: Image::from_path(ctx, "/JaccOutOfBox.png").unwrap(), 
-                // jacc_sound: Source::new(ctx, "/pewpew.ogg").unwrap() 
-            }
-        )
+        Assets { 
+            jacc_in_the_box: Image::from_path(ctx, "/JaccInTheBox.png").unwrap(), 
+            jacc_out_of_box: Image::from_path(ctx, "/JaccOutOfBox.png").unwrap(), 
+            // jacc_sound: Source::new(ctx, "/pewpew.ogg").unwrap() 
+        }
     }
 
     pub fn get_jacc_in_the_box_image(&self) -> &Image { &self.jacc_in_the_box }

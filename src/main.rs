@@ -27,8 +27,7 @@ use how_to_play::{draw_how_to_play, kde_how_to_play};
 use after_game::{draw_after_game, kde_after_game};
 
 pub fn main() {
-    let args: Vec<String> = env::args().collect();
-
+    // We mainly generate this toml file to have VSYNC functionality.
     generate_toml_file().expect("Failed to generate conf.toml file!");
 
     // Add a directory for files!
@@ -47,7 +46,8 @@ pub fn main() {
     let (ctx, event_loop) = context_builder.build()
         .expect("Something went wrong creating the game context!");
 
-    let username = if let Some(val) = args.get(1) { String::from(val) } else { String::from("Player") };
+    let args: Vec<String> = env::args().collect();
+    let username: String = if let Some(val) = args.get(1) { String::from(val) } else { String::from("Player") };
 
     let game: Game = Game::new(&ctx, username);
     
@@ -74,17 +74,13 @@ pub struct Game {
 }
 
 impl Game {
-
     // Load and or create resources here..
     pub fn new(ctx: &Context, username: String) -> Game {
-
-        let assets: Assets = Assets::new(ctx).expect("Unable to parse Assets. Please validate if they exist at the pre-defined paths");
-
         Game { 
             name: String::from("Jacc in the Box"),
-            screen_width: 600.0,
-            screen_height: 800.0,
-            assets,
+            screen_width: 640.0,
+            screen_height: 640.0,
+            assets: Assets::new(ctx),
             game_state: GameState::MainMenu,
             jacc: None,
             username,
@@ -119,6 +115,10 @@ impl Game {
     pub fn get_screen_height(&self) -> f32 { self.screen_height }
 
     pub fn get_assets(&mut self) -> &mut Assets { &mut self.assets }
+
+    pub fn get_name(&self) -> &str { &self.name }
+
+    pub fn get_middle_of_screen_width(&self) -> f32 { self.screen_width / 2.0 }
 }
 
 impl EventHandler for Game {

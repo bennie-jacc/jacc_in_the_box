@@ -1,8 +1,8 @@
-use ggez::{input::keyboard::{KeyInput, KeyCode}, graphics::{Canvas, DrawParam, Color, Text}, glam::vec2, Context};
-use crate::{Game, draw_util::draw_game_title, jacc::{JaccState, Jacc}, game_state::GameState, leaderboard_entry::LeaderboardEntry};
+use ggez::{input::keyboard::{KeyInput, KeyCode}, graphics::{Canvas, DrawParam, Color, Text, Image}, glam::vec2, Context, mint::Point2};
+use crate::{Game, draw_util::draw_screen_header, jacc::{JaccState, Jacc}, game_state::GameState, leaderboard_entry::LeaderboardEntry};
 
 pub fn draw_in_game(game: &mut Game, canvas: &mut Canvas) {
-    draw_game_title(&game.name, canvas);
+    draw_screen_header("On your toes..", &game, canvas);
 
     match game.get_jacc().get_jacc_state() {
         JaccState::InTheBox      => draw_in_box(game, canvas),
@@ -28,7 +28,14 @@ pub fn kde_in_game(ctx: &Context, game: &mut Game, input: &KeyInput) {
 }
 
 fn draw_in_box(game: &mut Game, canvas: &mut Canvas) {
-    // todo!("Draw clown in the box!");
+    let in_box_image = game.get_assets().get_jacc_in_the_box_image();
+    
+    canvas.draw(
+        in_box_image,
+        DrawParam::default()
+            .dest(vec2(150.0, 150.0))
+            .scale([0.25, 0.25])
+    );
     
     canvas.draw(
         &Text::new("Press space once the clown pops out of the box!"),
@@ -43,7 +50,11 @@ fn draw_in_box(game: &mut Game, canvas: &mut Canvas) {
 }
 
 fn draw_out_of_box(game: &mut Game, canvas: &mut Canvas) {
-    // todo!("Draw clown out of the box!")
+    canvas.draw(
+        game.get_assets().get_jacc_out_of_box_image(),
+        DrawParam::new()
+            .scale([0.25, 0.25])
+    );
 
     canvas.draw(
         &Text::new("PRESS SPACE!!!"),
