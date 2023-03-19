@@ -9,7 +9,7 @@ pub struct Leaderboard {
 
 impl Leaderboard {
     pub fn new() -> Leaderboard {
-        let path: String = String::from("./resources/leaderboard.txt");
+        let path: String = String::from("target/leaderboard.txt");
         let leaderboard_file: File = gen_leaderboard(&path);
 
         Leaderboard {

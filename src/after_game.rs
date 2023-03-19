@@ -10,17 +10,23 @@ pub fn draw_after_game(success: bool, game: &mut Game, canvas: &mut Canvas) {
     canvas.draw(
         &Text::new(text),
         DrawParam::default()
-            .dest(vec2(175.0, 200.0))
+            .dest(vec2(
+                game.get_middle_of_screen_width() - 300.0,
+                200.0
+            ))
             .color(Color::BLACK)
-            .scale([2.0, 2.0])
+            .scale([1.5, 1.5])
     );
 
     canvas.draw(
         &Text::new(format!("Press ESC key to go to main menu or SPACE to play again!")),
         DrawParam::default()
-            .dest(vec2(50.0, 400.0))
+            .dest(vec2(
+                game.get_middle_of_screen_width() - 300.0,
+                400.0
+            ))
             .color(Color::BLACK)
-            .scale([1.5, 1.5])
+            .scale([1.25, 1.25])
     );
 }
 

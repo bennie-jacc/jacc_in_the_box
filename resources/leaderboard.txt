@@ -1,6 +1,0 @@
-Player;0.27129534
-benny;0.2925573
-Player;0.41698706
-Player;0.4353402
-Player;0.5078172
-Player;3.1881237

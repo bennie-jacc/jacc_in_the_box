@@ -8,16 +8,14 @@ pub mod after_game;
 pub mod leaderboard;
 pub mod leaderboard_entry;
 pub mod leaderboard_menu;
-pub mod assets;
 
-use std::{fs::File, env, path};
+use std::{fs::File, env};
 
 use ggez::{
     ContextBuilder, Context, event::{EventHandler, self}, GameResult, graphics::{Color, Canvas}, input::keyboard::KeyInput, GameError, conf::{Conf, self}, mint::Point2
 };
 
 use jacc::Jacc;
-use assets::Assets;
 use game_state::GameState;
 use leaderboard::Leaderboard;
 use leaderboard_menu::{draw_leaderboard, kde_leaderboard};
@@ -30,26 +28,18 @@ pub fn main() {
     // We mainly generate this toml file to have VSYNC functionality.
     generate_toml_file().expect("Failed to generate conf.toml file!");
 
-    // Add a directory for files!
-    let resource_dir = if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
-        let mut path = path::PathBuf::from(manifest_dir);
-        path.push("resources");
-        path
-    }
-    else { path::PathBuf::from("./resources") };
-
     let context_builder = ContextBuilder::new("JaccInTheBox", "Benny")
         .window_setup(conf::WindowSetup::default().title("Jacc In The Box!"))
-        .window_mode(conf::WindowMode::default().dimensions(640.0, 640.0))
-        .add_resource_path(resource_dir);
+        .window_mode(conf::WindowMode::default().dimensions(640.0, 640.0));
 
     let (ctx, event_loop) = context_builder.build()
         .expect("Something went wrong creating the game context!");
 
     let args: Vec<String> = env::args().collect();
-    let username: String = if let Some(val) = args.get(1) { String::from(val) } else { String::from("Player") };
 
-    let game: Game = Game::new(&ctx, username);
+    let game: Game = Game::new(
+        if let Some(val) = args.get(1) { String::from(val) } else { String::from("Player") }
+    );
     
     ctx.gfx.set_window_title(&game.name);
 
@@ -66,7 +56,6 @@ pub struct Game {
     name: String,
     screen_width: f32,
     screen_height: f32,
-    assets: Assets,
     username: String,
     game_state: GameState,
     jacc: Option<Jacc>,
@@ -75,12 +64,11 @@ pub struct Game {
 
 impl Game {
     // Load and or create resources here..
-    pub fn new(ctx: &Context, username: String) -> Game {
+    pub fn new(username: String) -> Game {
         Game { 
             name: String::from("Jacc in the Box"),
             screen_width: 640.0,
             screen_height: 640.0,
-            assets: Assets::new(ctx),
             game_state: GameState::MainMenu,
             jacc: None,
             username,
@@ -113,8 +101,6 @@ impl Game {
     pub fn get_screen_width(&self) -> f32 { self.screen_width }
 
     pub fn get_screen_height(&self) -> f32 { self.screen_height }
-
-    pub fn get_assets(&mut self) -> &mut Assets { &mut self.assets }
 
     pub fn get_name(&self) -> &str { &self.name }
 
